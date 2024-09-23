@@ -1,4 +1,4 @@
-import { IAdress } from "./IAdress";
+import { IAdress } from "../pages/FinalizeOrder/components/AdressForm";
 
 export interface IFinishedOrder {
   adress: IAdress,

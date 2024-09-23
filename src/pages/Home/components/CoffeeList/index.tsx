@@ -15,30 +15,29 @@ import { COFFEE_ITEMS } from "../../../../http/CoffeeItems";
 import { ICoffee } from "../../../../interfaces/ICoffee";
 import { useContext } from "react";
 import { OrderContext } from "../../../../contexts/OrderContext";
+import { v4 as uuidv4 } from 'uuid';
 
 export function CoffeeList() {
-  const { defineNewCoffee, defineNewShoppingCart, newCoffee, updateCoffeeQuantity } =
+  const { defineNewCoffee, defineNewShoppingCart, newCoffee } =
     useContext(OrderContext);
 
   function HandleAddNewCoffee(coffee: ICoffee, quantity: number) {
     coffee.quantity = quantity;
     defineNewCoffee(coffee);
-    // updateCoffeeQuantity(coffee, quantity)
     
   }
   function HandleAddCoffeOnCart() {
-    if (newCoffee) {
+    if (newCoffee && newCoffee.quantity > 0) {
       defineNewShoppingCart(newCoffee);
     }
   }
 
-
   return (
     <CoffeeListContainer>
       {COFFEE_ITEMS.map((coffee) => {
-        // GetCoffeeQuantity(coffee)
+
         return (
-          <CoffeeCardContainer key={coffee.id}>
+          <CoffeeCardContainer key={uuidv4()}>
             <CoffeeImage>
               <img
                 src={coffee.img}
@@ -50,7 +49,7 @@ export function CoffeeList() {
               <TagsContainer>
                 {coffee.feature.map((feature) => {
                   return (
-                    <CoffeeFeatureTagContainer>
+                    <CoffeeFeatureTagContainer key={uuidv4()}>
                       {feature}
                     </CoffeeFeatureTagContainer>
                   );
@@ -74,7 +73,7 @@ export function CoffeeList() {
               <InputNumberContainer
                 type="number"
                 placeholder="0"
-                
+                min={0}
                 onChange={(event) =>
                   HandleAddNewCoffee(coffee, Number(event.target.value))
                   

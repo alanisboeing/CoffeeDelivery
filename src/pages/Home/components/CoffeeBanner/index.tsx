@@ -1,7 +1,8 @@
 import { Coffee, Package, ShoppingCart, Timer } from "@phosphor-icons/react";
-import { CoffeeBannerContainer, IconContainer, ListContainer, TextContainer, Title } from "./styles";
+import { CoffeeBannerContainer, ListContainer, TextContainer, Title } from "./styles";
 
 import CoffeeMainImage from "../../../../assets/CoffeeMainImage.svg";
+import { IconContainer } from "../../../../styles/Icon";
 
 export function CoffeeBanner() {
   return (

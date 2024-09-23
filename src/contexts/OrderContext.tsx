@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useState } from "react";
 import { IOrderContext } from "../interfaces/IOrderContext";
 import { ICoffee } from "../interfaces/ICoffee";
-import { IAdress } from "../interfaces/IAdress";
-import { IFinishedOrder, PaymentMethodType } from "../interfaces/IFinishedOrder";
+import { PaymentMethodType } from "../interfaces/IFinishedOrder";
+import { IAdress } from "../pages/FinalizeOrder/components/AdressForm";
 
 export const OrderContext = createContext({} as IOrderContext);
 interface IOrderContextProviderProps {
@@ -12,23 +12,16 @@ interface IOrderContextProviderProps {
 export function OrderContextProvider({ children }: IOrderContextProviderProps) {
   const [newCoffee, setNewCoffee] = useState<ICoffee | null>(null);
   const [shoppingCart, setNewShoppingCart] = useState<ICoffee[]>([]);
-  const [newAdress, setNewAdress] = useState<IAdress>({} as IAdress);
+  const [newAdress, setNewAdress] = useState<IAdress>();
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('' as PaymentMethodType)
 
   function definePaymentMethod(newPaymentMethod: PaymentMethodType){
     setPaymentMethod(newPaymentMethod)
   }
 
-  function defineNewAdress(
-    inputValue: string | number | null,
-    adressType: keyof IAdress
-  ) {
-    setNewAdress((state) => {
-      
-      state[adressType] = inputValue;
-      return state;
-    });
-    
+
+  function resetShoppingCart(){
+    setNewShoppingCart([] as ICoffee[])
   }
 
   function updateCoffeeQuantity(coffeeToUpdate: ICoffee, newQuantity: number) {
@@ -45,6 +38,14 @@ export function OrderContextProvider({ children }: IOrderContextProviderProps) {
   function defineNewShoppingCart(coffee: ICoffee) {
     setNewShoppingCart((state) => [...state, coffee]);
   }
+  function removeCoffeeFromShoppingCart(coffeeToRemove: ICoffee){
+    setNewShoppingCart((state)=>{
+      const filter= state.filter((coffee)=>{
+        return coffee.id != coffeeToRemove.id
+      })
+      return [...filter]
+    })
+  }
 
   return (
     <OrderContext.Provider
@@ -56,8 +57,10 @@ export function OrderContextProvider({ children }: IOrderContextProviderProps) {
         defineNewCoffee,
         defineNewShoppingCart,
         updateCoffeeQuantity,
-        defineNewAdress,
+        setNewAdress,
         definePaymentMethod,
+        resetShoppingCart,
+        removeCoffeeFromShoppingCart,
       }}
     >
       {children}

@@ -62,6 +62,18 @@ export const ConfirmOrder = styled.div`
     flex-direction: row;
     justify-content: space-between;
   }
+
+  h2{
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  p{
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
 `
 
 export const ConfirmOrderButton = styled.button`
@@ -74,6 +86,17 @@ export const ConfirmOrderButton = styled.button`
   text-transform: uppercase;
   font-size: 0.875rem;
   font-weight: 700;
+
+  &:hover{
+    background: ${props => props.theme["yellow-700"]};
+  }
+
+  &:disabled{
+    background: ${props => props.theme["yellow-700"]};
+    opacity: 0.8;
+
+    cursor: not-allowed;
+  }
 `
 export const RemoveButton = styled.button`
   background: ${props => props.theme["gray-400"]};
@@ -90,6 +113,8 @@ export const RemoveButton = styled.button`
   span{
     margin-left: 0.3rem;
   }
+
+
 
 `
 export const IconContainer = styled.div`
@@ -109,5 +134,7 @@ export const InputNumberContainer = styled.input`
   align-items: center;
   text-align: center;
 `
+
+
 
 // export const InputNumber

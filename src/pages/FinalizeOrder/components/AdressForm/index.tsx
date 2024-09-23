@@ -1,7 +1,16 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPinLine } from "@phosphor-icons/react";
+import { useContext } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { OrderContext } from "../../../../contexts/OrderContext";
+import { UFs } from "../../../../http/UFs";
+import { CardFormHeader } from "../../styles";
 import {
   BaseInput,
   CepContainer,
+  ErrorMessage,
+  FieldContainer,
   FirstFormGridContainer,
   IconContainer,
   PaymentFormCard,
@@ -9,20 +18,39 @@ import {
   SecondFormGridContainer,
   SelectInput,
 } from "./styles";
-import { CardFormHeader } from "../../styles";
-import { UFs } from "../../../../http/UFs";
-import { useContext } from "react";
-import { OrderContext } from "../../../../contexts/OrderContext";
-import { AdressType } from "../../../../interfaces/IAdress";
+import { useNavigate } from "react-router-dom";
 
+const newAdressFormValidationSchema = z.object({
+  cep: z.coerce.number().min(1, "Campo obrigatório."),
+  rua: z.string().min(1, "Campo obrigatório."),
+  numero: z.coerce.number({}).min(1, "Campo obrigatório."),
+  bairro: z.string().min(1, "Campo obrigatório."),
+  cidade: z.string().min(1, "Campo obrigatório."),
+  complemento: z.string(),
+  UF: z.string().min(1, "Campo obrigatório."),
+});
+
+export type IAdress = z.infer<typeof newAdressFormValidationSchema>;
 
 export function AdressForm() {
+  const navigate = useNavigate();
 
-  const { newAdress, defineNewAdress } = useContext(OrderContext);
+  const { setNewAdress, resetShoppingCart } = useContext(OrderContext);
 
-  function HandlNewAdress(){
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IAdress>({
+    resolver: zodResolver(newAdressFormValidationSchema),
+  });
 
+  function handleSubmitOrder(event: IAdress) {
+    setNewAdress(event);
+    navigate("/delivered");
+    resetShoppingCart();
   }
+
   return (
     <PaymentFormCard>
       <CardFormHeader>
@@ -36,31 +64,87 @@ export function AdressForm() {
         </span>
       </CardFormHeader>
 
-      <PaymentFormContainer>
+      <PaymentFormContainer
+        id="address-form"
+        onSubmit={handleSubmit(handleSubmitOrder)}
+      >
         <CepContainer>
-          <BaseInput type="number" value={newAdress.cep } placeholder="CEP" onChange={(event)=> defineNewAdress(event.target.value, AdressType.cep)} />
+          <BaseInput {...register("cep")} placeholder="CEP" />
+          {errors?.cep?.message && (
+            <ErrorMessage>{errors?.cep?.message}</ErrorMessage>
+          )}
         </CepContainer>
-        <BaseInput type="text" placeholder="Rua" value={newAdress.rua} onChange={(event)=> defineNewAdress(event.target.value, AdressType.rua)} />
+        <FieldContainer>
+          <BaseInput type="text" placeholder="Rua" {...register("rua")} />
+          {errors?.rua?.message && (
+            <ErrorMessage>{errors?.rua?.message}</ErrorMessage>
+          )}
+        </FieldContainer>
 
         <FirstFormGridContainer>
-          <BaseInput type="text" placeholder="Número" value={newAdress.numero} onChange={(event)=> defineNewAdress(event.target.value, AdressType.numero)} />
-          <BaseInput type="text" placeholder="Complemento" value={newAdress.complemento} onChange={(event)=> defineNewAdress(event.target.value, AdressType.complemento)} />
+          <FieldContainer>
+            <BaseInput
+              type="text"
+              placeholder="Número"
+              {...register("numero")}
+            />
+            {errors?.numero?.message && (
+              <ErrorMessage>{errors?.numero?.message}</ErrorMessage>
+            )}
+          </FieldContainer>
+          <FieldContainer>
+            <BaseInput
+              type="text"
+              placeholder="Complemento"
+              {...register("complemento")}
+            />
+            {errors?.cep?.message && (
+              <ErrorMessage>{errors?.cep?.message}</ErrorMessage>
+            )}
+          </FieldContainer>
         </FirstFormGridContainer>
 
         <SecondFormGridContainer>
-          <BaseInput type="text" placeholder="Bairro" value={newAdress.bairro} onChange={(event)=> defineNewAdress(event.target.value, AdressType.bairro)} />
-          <BaseInput type="text" placeholder="Cidade" value={newAdress.cidade} onChange={(event)=> defineNewAdress(event.target.value, AdressType.cidade)} />
+          <FieldContainer>
+            <BaseInput
+              type="text"
+              placeholder="Bairro"
+              {...register("bairro")}
+            />
+            {errors?.bairro?.message && (
+              <ErrorMessage>{errors?.bairro?.message}</ErrorMessage>
+            )}
+          </FieldContainer>
+          <FieldContainer>
+            <BaseInput
+              type="text"
+              placeholder="Cidade"
+              {...register("cidade")}
+            />
+            {errors?.cidade?.message && (
+              <ErrorMessage>{errors?.cidade?.message}</ErrorMessage>
+            )}
+          </FieldContainer>
+
           {/* <BaseInput type="text" placeholder="UF" /> */}
-          <SelectInput name="UFs" id="uf-select" value={newAdress.UF} onChange={(event)=> defineNewAdress(event.target.value, AdressType.UF)}>
-            <option value="" disabled defaultValue={""}>UF</option>
-            {
-              UFs.map(uf =>{
-                return(
-                  <option value={uf.code}>{uf.code}</option>
-                )
-              })
-            }
-          </SelectInput>
+          <FieldContainer>
+            <SelectInput id="uf-select" {...register("UF")}>
+              <option value="" selected disabled>
+                UF
+              </option>
+              {UFs.map((uf) => {
+                return (
+                  <option key={uf.code} value={uf.code}>
+                    {uf.code}
+                  </option>
+                );
+              })}
+            </SelectInput>
+            <ErrorMessage>
+              {" "}
+              {errors?.UF?.message && <span>{errors?.UF?.message}</span>}
+            </ErrorMessage>
+          </FieldContainer>
         </SecondFormGridContainer>
       </PaymentFormContainer>
     </PaymentFormCard>

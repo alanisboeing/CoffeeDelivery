@@ -7,12 +7,12 @@ import {
   PaymentMethodCard,
 } from "./styles";
 import { PaymentMethodType } from "../../../../interfaces/IFinishedOrder";
-import { ComponentType, useContext } from "react";
+import { useContext } from "react";
 import { OrderContext } from "../../../../contexts/OrderContext";
 
 export function PaymentMethod() {
 
-  const {definePaymentMethod, paymentMethod} = useContext(OrderContext)
+  const {definePaymentMethod} = useContext(OrderContext)
 
   function HandleNewPaymentMethod(method: PaymentMethodType, button: any){
     definePaymentMethod(method)

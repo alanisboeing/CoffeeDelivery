@@ -12,25 +12,23 @@ import { Trash } from "@phosphor-icons/react";
 import { useContext } from "react";
 import { OrderContext } from "../../../../contexts/OrderContext";
 import { ICoffee } from "../../../../interfaces/ICoffee";
-import { useNavigate } from "react-router-dom";
 
 export function TotalOrder() {
-  const { shoppingCart, updateCoffeeQuantity, paymentMethod, newAdress } = useContext(OrderContext);
-  const navigate = useNavigate()
+  const { shoppingCart, updateCoffeeQuantity, removeCoffeeFromShoppingCart } =
+    useContext(OrderContext);
+  let isButtonDisabled = true;
 
+  function HandeRemoveCoffee(coffee: ICoffee) {
+    removeCoffeeFromShoppingCart(coffee);
+  }
   function CountTotalItemsValue() {
     let count = 0;
     shoppingCart.forEach((coffee) => (count += coffee.price * coffee.quantity));
+    if (count) {
+      isButtonDisabled = false;
+    }
     return count;
   }
-
-  function HandleConfirmOrder(){
-    navigate('/delivered')
-    console.table(newAdress)
-    console.log(paymentMethod)
-
-  }
-
 
   return (
     <ConfirmOrder>
@@ -45,9 +43,15 @@ export function TotalOrder() {
             <OrderedCoffeGrid>
               <p>{coffee.name}</p>
               <div>
-                <InputNumberContainer value={coffee.quantity} type="number"  onChange={(event)=>updateCoffeeQuantity(coffee, Number(event?.target.value) )}/>
+                <InputNumberContainer
+                  value={coffee.quantity}
+                  type="number"
+                  onChange={(event) =>
+                    updateCoffeeQuantity(coffee, Number(event?.target.value))
+                  }
+                />
 
-                <RemoveButton>
+                <RemoveButton onClick={() => HandeRemoveCoffee(coffee)}>
                   <IconContainer>
                     <Trash size={14} />
                   </IconContainer>
@@ -70,24 +74,31 @@ export function TotalOrder() {
           <span>
             <p>Total de itens</p>
             <p>
+              <span>R$ </span>
               {new Intl.NumberFormat("id", {
                 minimumFractionDigits: 2,
               }).format(CountTotalItemsValue())}
             </p>
           </span>
+
           <span>
             <p>Entrega</p>
-            <p>R$ 3,50</p>
+            <p>R$ 5,00</p>
           </span>
+
           <span>
             <h2>Total</h2>
             <h2>
+              <span>R$ </span>
               {new Intl.NumberFormat("id", {
                 minimumFractionDigits: 2,
-              }).format(CountTotalItemsValue() + 3.5)}
+              }).format(CountTotalItemsValue() + 5)}
             </h2>
           </span>
-          <ConfirmOrderButton onClick={HandleConfirmOrder}>Confirmar pedido</ConfirmOrderButton>
+
+          <ConfirmOrderButton form="address-form" disabled={isButtonDisabled}>
+            Confirmar pedido
+          </ConfirmOrderButton>
         </ConfirmOrder>
       </TotalOrderContainer>
     </ConfirmOrder>

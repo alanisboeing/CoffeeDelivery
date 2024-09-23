@@ -1,12 +1,14 @@
 import styled from "styled-components"
-import { IColorIcon, ICON_COLORS } from "../../../../interfaces/IColorIcon"
-
 
 export const CoffeeBannerContainer = styled.main`
   display: flex;
   justify-content: space-between;
   gap: 2rem;
   margin: 6rem 0;
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+}
 
 `
 export const TextContainer = styled.div`
@@ -22,7 +24,7 @@ export const Title = styled.div`
   color: ${props => props.theme["gray-900"]};
   h1{
     font-size: 3rem;
-    weight: 800;
+    font-weight: 800;
     margin: 0;
       line-height: 1.2;
 
@@ -45,16 +47,4 @@ export const ListContainer = styled.ul`
     align-items: center;
     gap: 0.75rem;
   }
-`
-
-export const IconContainer = styled.span<IColorIcon>`
-    height: 2rem;
-    width: 2rem;
-    border-radius: 50%;
-    color: ${props => props.theme.white};
-    background: ${props => props.theme[ICON_COLORS[props.iconcolor]]};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
 `

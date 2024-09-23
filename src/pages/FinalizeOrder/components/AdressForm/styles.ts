@@ -18,6 +18,8 @@ export const BaseInput = styled.input`
   padding: 1rem;
   margin-bottom: 1rem;
   font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+
 
 `
 
@@ -27,7 +29,6 @@ export const SelectInput = styled.select`
   border-radius: 8px;
   border: 0.5px solid ${props => props.theme["gray-400"]};
   padding: 1rem;
-  margin-bottom: 1rem;
   font-size: 0.875rem;
   font-family: "Roboto", sans-serif;
   -webkit-appearance: none; 
@@ -58,5 +59,21 @@ export const PaymentFormContainer = styled.form`
 `
 export const CepContainer = styled.div`
     display: flex;
+    flex-direction: column;
     width: 20%;
+    margin-bottom: 2rem;
+`
+
+export const FieldContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+`
+
+export const ErrorMessage = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ed4337;
 `
